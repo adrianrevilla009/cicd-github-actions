@@ -1,0 +1,22 @@
+name: release
+on:
+  workflow_dispatch:
+jobs:
+  staging:
+    runs-on: ubuntu-24.04
+    environment: staging
+    steps:
+      - run: echo "deploy to staging"
+  production:
+    needs: staging
+    runs-on: ubuntu-24.04
+    # `production` is configured in repo Settings > Environments with required reviewers
+    # and a branch rule (main only); the job pauses until a reviewer approves.
+    environment:
+      name: production
+      url: https://orders.example.com
+    concurrency:
+      group: production
+      cancel-in-progress: false
+    steps:
+      - run: echo "deploy to production"

@@ -1,0 +1,13 @@
+name: use-composite
+on:
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - id: orders
+        uses: ./composite-action
+        with:
+          goals: verify
+      - run: echo "version ${{ steps.orders.outputs.version }}"

@@ -1,0 +1,15 @@
+name: caller
+on:
+  pull_request:
+jobs:
+  orders:
+    # Same shape lab-workflows consumers use: uses: adrianrevilla009/repo/path@ref
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      module: orders-service
+    secrets: inherit
+  report:
+    needs: orders
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "built ${{ needs.orders.outputs.artifact }}"

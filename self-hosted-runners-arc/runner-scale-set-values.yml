@@ -1,0 +1,13 @@
+# Helm values for gha-runner-scale-set (Actions Runner Controller); pin the chart version at install time.
+githubConfigUrl: https://github.com/adrianrevilla009/orders
+githubConfigSecret: arc-github-app   # k8s Secret created out of band; never committed
+minRunners: 0
+maxRunners: 3
+containerMode:
+  type: dind
+template:
+  spec:
+    containers:
+      - name: runner
+        image: ghcr.io/actions/actions-runner:2.321.0
+        command: ["/home/runner/run.sh"]

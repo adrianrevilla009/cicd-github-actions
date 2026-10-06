@@ -1,0 +1,8 @@
+name: on-arc
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: arc-runner-set   # the Helm release name is the label
+    steps:
+      - run: uname -a

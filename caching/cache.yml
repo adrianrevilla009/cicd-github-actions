@@ -1,0 +1,18 @@
+name: caching
+on:
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        id: m2
+        with:
+          path: ~/.m2/repository
+          # exact key changes when any POM changes; restore-keys falls back to the newest older cache
+          key: m2-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-${{ runner.os }}-
+      - run: mvn -B -ntp verify
+      - run: echo "cache hit = ${{ steps.m2.outputs.cache-hit }}"

@@ -1,0 +1,38 @@
+name: services
+on:
+  pull_request:
+    paths-ignore: ["**.md"]
+jobs:
+  changes:
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: read
+    outputs:
+      orders: ${{ steps.f.outputs.orders }}
+      billing: ${{ steps.f.outputs.billing }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: f
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            orders:
+              - 'services/orders/**'
+              - 'libs/common/**'
+            billing:
+              - 'services/billing/**'
+              - 'libs/common/**'
+  orders:
+    needs: changes
+    if: needs.changes.outputs.orders == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: mvn -B -ntp -pl services/orders -am verify
+  billing:
+    needs: changes
+    if: needs.changes.outputs.billing == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: mvn -B -ntp -pl services/billing -am verify

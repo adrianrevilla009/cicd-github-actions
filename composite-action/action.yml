@@ -1,0 +1,23 @@
+name: setup-orders-build
+description: Set up JDK 21 with Maven cache and run the Orders build
+inputs:
+  goals:
+    description: Maven goals
+    default: verify
+outputs:
+  version:
+    description: Project version read from the POM
+    value: ${{ steps.version.outputs.version }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: "21"
+        cache: maven
+    - id: version
+      shell: bash
+      run: echo "version=$(mvn -B -ntp -q help:evaluate -Dexpression=project.version -DforceStdout)" >> "$GITHUB_OUTPUT"
+    - shell: bash
+      run: mvn -B -ntp ${{ inputs.goals }}
